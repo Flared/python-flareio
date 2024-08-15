@@ -12,18 +12,18 @@ class FlareApiClient:
         self,
         *,
         api_key: str,
-        tenant_id: int | None = None,
+        tenant_id: t.Optional[int] = None,
     ) -> None:
         if not api_key:
             raise Exception("API Key cannot be empty.")
         self.api_key: str = api_key
-        self.tenant_id: int | None = tenant_id
+        self.tenant_id: t.Optional[int] = tenant_id
 
-        self.token: str | None = None
-        self.token_exp: datetime | None = None
+        self.token: t.Optional[str] = None
+        self.token_exp: t.Optional[datetime] = None
 
     def generate_token(self) -> str:
-        payload: dict | None = None
+        payload: t.Optional[dict] = None
 
         if self.tenant_id is not None:
             payload = {
@@ -49,7 +49,7 @@ class FlareApiClient:
         return token
 
     def _auth_headers(self) -> dict:
-        token: str | None = self.token
+        token: t.Optional[str] = self.token
         if not token or (self.token_exp and self.token_exp < datetime.now()):
             token = self.generate_token()
 
