@@ -1,7 +1,7 @@
 venv: pyproject.toml poetry.lock venv-tools
 	rm -rf venv
 	python3 -m venv venv
-	venv-tools/bin/poetry install
+	VIRTUAL_ENV=venv venv-tools/bin/poetry install
 
 venv-tools: requirements.tools.txt
 	rm -rf venv-tools
