@@ -7,6 +7,13 @@ from flareio.exceptions import TokenError
 import typing as t
 
 
+T = t.TypeVar("T")
+
+
+def _type_wraps(_: T) -> t.Callable[..., T]:
+    return lambda x: x  # type: ignore
+
+
 class FlareApiClient:
     def __init__(
         self,
@@ -79,6 +86,7 @@ class FlareApiClient:
             headers=headers,
         )
 
+    @_type_wraps(requests.post)
     def post(
         self,
         *args: t.Any,
@@ -86,6 +94,7 @@ class FlareApiClient:
     ) -> requests.Response:
         return self._request("POST", *args, **kwargs)
 
+    @_type_wraps(requests.get)
     def get(
         self,
         *args: t.Any,
@@ -93,6 +102,7 @@ class FlareApiClient:
     ) -> requests.Response:
         return self._request("GET", *args, **kwargs)
 
+    @_type_wraps(requests.put)
     def put(
         self,
         *args: t.Any,
@@ -100,6 +110,7 @@ class FlareApiClient:
     ) -> requests.Response:
         return self._request("PUT", *args, **kwargs)
 
+    @_type_wraps(requests.delete)
     def delete(
         self,
         *args: t.Any,
