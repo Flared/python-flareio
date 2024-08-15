@@ -29,13 +29,15 @@ class FlareApiClient:
                 "tenant_id": self.tenant_id,
             }
 
-        token: str = requests.post(
+        resp = requests.post(
             "https://api.flare.io/tokens/generate",
             json=payload,
             headers={
                 "Authorization": self.api_key,
             },
-        ).json()["token"]
+        )
+        resp.raise_for_status()
+        token: str = resp.json()["token"]
 
         self.token = token
         self.token_exp = datetime.now() + timedelta(minutes=45)
