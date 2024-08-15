@@ -41,7 +41,7 @@ class FlareApiClient:
 
         return token
 
-    def _auth_headers(self) -> None:
+    def _auth_headers(self) -> dict:
         token: str | None = self.token
         if not token or (self.token_exp and self.token_exp < datetime.now()):
             token = self.generate_token()
