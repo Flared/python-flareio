@@ -2,7 +2,7 @@
 name = "flareio"
 version = "0.1.0"
 description = ""
-authors = ["aviau <alexandre@alexandreviau.net>"]
+authors = ["Alexandre Viau <alexandre.viau@flare.io>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
