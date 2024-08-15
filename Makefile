@@ -16,3 +16,8 @@ clean:
 .PHONY: test
 test: venv
 	venv/bin/pytest
+
+.PHONY: build
+build: venv-tools
+	rm -rf dist
+	venv-tools/bin/poetry build
