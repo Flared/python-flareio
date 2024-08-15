@@ -28,6 +28,13 @@ format: venv-tools
 	venv-tools/bin/ruff check --fix --unsafe-fixes
 	venv-tools/bin/ruff format
 
+.PHONY: format-check
+format-check: venv-tools
+	venv-tools/bin/ruff check
+
+.PHONY: lint
+lint: mypy format-check
+
 .PHONY: mypy
-mypy:
-	venv-tools/bin/poetry run mypy flareio
+mypy: venv
+	venv/bin/mypy flareio

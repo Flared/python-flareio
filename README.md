@@ -15,3 +15,9 @@ sources = client.get(
     "https://api.flare.io/leaksdb/v2/sources",
 ).json()
 ```
+
+## Dev commands
+
+- `make test` will run tests
+- `make format` format will format the code
+- `make lint` will run typechecking + linting
