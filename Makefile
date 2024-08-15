@@ -37,4 +37,4 @@ lint: mypy format-check
 
 .PHONY: mypy
 mypy: venv
-	venv/bin/mypy flareio
+	venv/bin/mypy flareio tests
