@@ -51,9 +51,14 @@ class FlareApiClient:
     def _request(
         self,
         method: str,
+        url: str,
         *args: t.Any,
         **kwargs: t.Any,
     ) -> requests.Response:
+        if not url.startswith("https://api.flare.io"):
+            raise Exception(
+                "Please only use the client to access the api.flare.io domain."
+            )
         headers = kwargs.pop("headers", None) or {}
         headers = {
             **headers,
@@ -61,6 +66,7 @@ class FlareApiClient:
         }
         return requests.request(
             method,
+            url,
             *args,
             **kwargs,
             headers=headers,

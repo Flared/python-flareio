@@ -136,3 +136,25 @@ def test_wrapped_methods() -> None:
         client.delete("https://api.flare.io/hello-delete")
         assert mocker.last_request.url == "https://api.flare.io/hello-delete"
         assert mocker.last_request.headers["Authorization"] == "Bearer test-token-hello"
+
+
+def test_bad_domain() -> None:
+    client = _get_test_client()
+    assert client.token is None
+    assert client.token_exp is None
+
+    with requests_mock.Mocker() as mocker:
+        mocker.register_uri(
+            "POST",
+            "https://api.flare.io/tokens/generate",
+            json={
+                "token": "test-token-hello",
+            },
+            status_code=200,
+        )
+
+    with pytest.raises(
+        Exception,
+        match="Please only use the client to access the api.flare.io domain.",
+    ):
+        client.post("https://bad.com/hello-post")
