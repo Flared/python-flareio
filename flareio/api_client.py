@@ -2,6 +2,7 @@ import requests
 
 from datetime import datetime
 from datetime import timedelta
+from flareio.exceptions import TokenError
 
 import typing as t
 
@@ -36,7 +37,10 @@ class FlareApiClient:
                 "Authorization": self.api_key,
             },
         )
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except Exception as ex:
+            raise TokenError("Failed to fetch API Token") from ex
         token: str = resp.json()["token"]
 
         self.token = token
