@@ -4,6 +4,7 @@ import requests_mock
 from datetime import datetime
 from flareio import FlareApiClient
 from flareio.exceptions import TokenError
+
 import typing as t
 
 
