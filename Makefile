@@ -15,7 +15,7 @@ clean:
 
 .PHONY: test
 test: venv
-	venv/bin/pytest
+	venv/bin/pytest -vv
 
 .PHONY: build
 build: venv-tools
@@ -24,5 +24,9 @@ build: venv-tools
 
 .PHONY: format
 format: venv-tools
-	venv-tools/bin/ruff check --fix
+	venv-tools/bin/ruff check --fix --unsafe-fixes
 	venv-tools/bin/ruff format
+
+.PHONY: mypy
+mypy:
+	venv-tools/bin/poetry run mypy flareio
