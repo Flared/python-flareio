@@ -13,3 +13,5 @@ jobs:
         architecture: x64
     - run: make build
     - run: venv-tools/bin/twine upload dist/*
+      with:
+        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
