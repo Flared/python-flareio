@@ -21,3 +21,8 @@ test: venv
 build: venv-tools
 	rm -rf dist
 	venv-tools/bin/poetry build
+
+.PHONY: format
+format: venv-tools
+	venv-tools/bin/ruff check --fix
+	venv-tools/bin/ruff format
