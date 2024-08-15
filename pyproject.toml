@@ -11,7 +11,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = ">=3.10"
 requests = "^2.32.3"
 mypy = {version = "^1.11.1", extras = ["dev"]}
 requests-mock = {version = "^1.12.1", extras = ["dev"]}
