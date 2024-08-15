@@ -57,52 +57,89 @@ class FlareApiClient:
 
     def _request(
         self,
+        *,
         method: str,
         url: str,
-        *args: t.Any,
-        **kwargs: t.Any,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
         if not url.startswith("https://api.flare.io"):
             raise Exception(
                 "Please only use the client to access the api.flare.io domain."
             )
-        headers = kwargs.pop("headers", None) or {}
         headers = {
-            **headers,
+            **(headers or {}),
             **self._auth_headers(),
         }
         return requests.request(
-            method,
-            url,
-            *args,
-            **kwargs,
+            method=method,
+            url=url,
+            params=params,
+            json=json,
             headers=headers,
         )
 
     def post(
         self,
-        *args: t.Any,
-        **kwargs: t.Any,
+        url: str,
+        *,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        return self._request("POST", *args, **kwargs)
+        return self._request(
+            method="POST",
+            url=url,
+            params=params,
+            json=json,
+            headers=headers,
+        )
 
     def get(
         self,
-        *args: t.Any,
-        **kwargs: t.Any,
+        url: str,
+        *,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        return self._request("GET", *args, **kwargs)
+        return self._request(
+            method="GET",
+            url=url,
+            params=params,
+            json=json,
+            headers=headers,
+        )
 
     def put(
         self,
-        *args: t.Any,
-        **kwargs: t.Any,
+        url: str,
+        *,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        return self._request("PUT", *args, **kwargs)
+        return self._request(
+            method="PUT",
+            url=url,
+            params=params,
+            json=json,
+            headers=headers,
+        )
 
     def delete(
         self,
-        *args: t.Any,
-        **kwargs: t.Any,
+        url: str,
+        *,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        return self._request("DELETE", *args, **kwargs)
+        return self._request(
+            method="DELETE",
+            url=url,
+            params=params,
+            json=json,
+            headers=headers,
+        )
