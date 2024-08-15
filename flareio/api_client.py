@@ -9,6 +9,7 @@ import typing as t
 class FlareApiClient:
     def __init__(
         self,
+        *,
         api_key: str,
         tenant_id: int | None = None,
     ) -> None:
