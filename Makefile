@@ -6,3 +6,7 @@ venv-tools: requirements.tools.txt
 .PHONY: clean
 clean:
 	rm -rf venv-tools
+
+.PHONY: test
+test: venv-tools
+	venv-tools/bin/poetry run pytest
