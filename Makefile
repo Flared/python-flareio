@@ -12,6 +12,7 @@ venv-tools: requirements.tools.txt
 clean:
 	rm -rf venv
 	rm -rf venv-tools
+	rm -rf dist
 
 .PHONY: test
 test: venv
