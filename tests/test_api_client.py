@@ -4,9 +4,10 @@ import requests_mock
 from datetime import datetime
 from flareio import FlareApiClient
 from flareio.exceptions import TokenError
+import typing as t
 
 
-def _get_test_client(tenant_id: int | None = None) -> FlareApiClient:
+def _get_test_client(tenant_id: t.Optional[int] = None) -> FlareApiClient:
     return FlareApiClient(
         api_key="test-api-key",
         tenant_id=tenant_id,
