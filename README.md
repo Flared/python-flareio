@@ -21,7 +21,7 @@ sources = client.get(
 ).json()
 ```
 
-## Dev Commands
+## Contributing
 
 - `make test` will run tests
 - `make format` format will format the code
