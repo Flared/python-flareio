@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "flareio"
-version = "0.1.10"
+version = "0.1.11"
 description = ""
 authors = ["Alexandre Viau <alexandre.viau@flare.io>"]
 readme = "README.md"
