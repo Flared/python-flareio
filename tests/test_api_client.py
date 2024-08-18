@@ -8,11 +8,29 @@ from flareio.exceptions import TokenError
 import typing as t
 
 
-def _get_test_client(tenant_id: t.Optional[int] = None) -> FlareApiClient:
-    return FlareApiClient(
+def _get_test_client(
+    *,
+    tenant_id: t.Optional[int] = None,
+    authenticated: bool = True,
+) -> FlareApiClient:
+    client = FlareApiClient(
         api_key="test-api-key",
         tenant_id=tenant_id,
     )
+
+    if authenticated:
+        with requests_mock.Mocker() as mocker:
+            mocker.register_uri(
+                "POST",
+                "https://api.flare.io/tokens/generate",
+                json={
+                    "token": "test-token-hello",
+                },
+                status_code=200,
+            )
+            client.generate_token()
+
+    return client
 
 
 def test_create_client() -> None:
@@ -27,7 +45,7 @@ def test_create_client_empty_api_key() -> None:
 
 
 def test_generate_token() -> None:
-    client = _get_test_client()
+    client = _get_test_client(authenticated=False)
     assert client.token is None
     assert client.token_exp is None
     with requests_mock.Mocker() as mocker:
@@ -53,7 +71,7 @@ def test_generate_token() -> None:
 
 
 def test_generate_token_error() -> None:
-    client = _get_test_client()
+    client = _get_test_client(authenticated=False)
     assert client.token is None
     assert client.token_exp is None
 
@@ -73,18 +91,6 @@ def test_generate_token_error() -> None:
 
 def test_bad_domain() -> None:
     client = _get_test_client()
-    assert client.token is None
-    assert client.token_exp is None
-
-    with requests_mock.Mocker() as mocker:
-        mocker.register_uri(
-            "POST",
-            "https://api.flare.io/tokens/generate",
-            json={
-                "token": "test-token-hello",
-            },
-            status_code=200,
-        )
 
     with pytest.raises(
         Exception,
@@ -94,7 +100,7 @@ def test_bad_domain() -> None:
 
 
 def test_wrapped_methods() -> None:
-    client = _get_test_client()
+    client = _get_test_client(authenticated=False)
     assert client.token is None
     assert client.token_exp is None
 
@@ -111,13 +117,13 @@ def test_wrapped_methods() -> None:
         mocker.register_uri(
             "POST",
             "https://api.flare.io/hello-post",
-            json={"foo": "bar"},
             status_code=200,
         )
 
-        client.post("https://api.flare.io/hello-post")
+        client.post("https://api.flare.io/hello-post", json={"foo": "bar"})
         assert mocker.last_request.url == "https://api.flare.io/hello-post"
         assert mocker.last_request.headers["Authorization"] == "Bearer test-token-hello"
+        assert mocker.last_request.json() == {"foo": "bar"}
 
     # GET
     with requests_mock.Mocker() as mocker:
