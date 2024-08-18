@@ -15,6 +15,7 @@ class FlareApiClient:
         *,
         api_key: str,
         tenant_id: t.Optional[int] = None,
+        session: t.Optional[requests.Session] = None,
     ) -> None:
         if not api_key:
             raise Exception("API Key cannot be empty.")
@@ -23,6 +24,7 @@ class FlareApiClient:
 
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
+        self._session = session or requests.Session()
 
     def generate_token(self) -> str:
         payload: t.Optional[dict] = None
@@ -32,7 +34,7 @@ class FlareApiClient:
                 "tenant_id": self._tenant_id,
             }
 
-        resp = requests.post(
+        resp = self._session.post(
             "https://api.flare.io/tokens/generate",
             json=payload,
             headers={
@@ -78,7 +80,7 @@ class FlareApiClient:
             **(headers or {}),
             **self._auth_headers(),
         }
-        return requests.request(
+        return self._session.request(
             method=method,
             url=url,
             params=params,
