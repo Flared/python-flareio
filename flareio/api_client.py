@@ -16,25 +16,25 @@ class FlareApiClient:
     ) -> None:
         if not api_key:
             raise Exception("API Key cannot be empty.")
-        self.api_key: str = api_key
-        self.tenant_id: t.Optional[int] = tenant_id
+        self._api_key: str = api_key
+        self._tenant_id: t.Optional[int] = tenant_id
 
-        self.token: t.Optional[str] = None
-        self.token_exp: t.Optional[datetime] = None
+        self._api_token: t.Optional[str] = None
+        self._api_token_exp: t.Optional[datetime] = None
 
     def generate_token(self) -> str:
         payload: t.Optional[dict] = None
 
-        if self.tenant_id is not None:
+        if self._tenant_id is not None:
             payload = {
-                "tenant_id": self.tenant_id,
+                "tenant_id": self._tenant_id,
             }
 
         resp = requests.post(
             "https://api.flare.io/tokens/generate",
             json=payload,
             headers={
-                "Authorization": self.api_key,
+                "Authorization": self._api_key,
             },
         )
         try:
@@ -43,17 +43,19 @@ class FlareApiClient:
             raise TokenError("Failed to fetch API Token") from ex
         token: str = resp.json()["token"]
 
-        self.token = token
-        self.token_exp = datetime.now() + timedelta(minutes=45)
+        self._api_token = token
+        self._api_token_exp = datetime.now() + timedelta(minutes=45)
 
         return token
 
     def _auth_headers(self) -> dict:
-        token: t.Optional[str] = self.token
-        if not token or (self.token_exp and self.token_exp < datetime.now()):
-            token = self.generate_token()
+        api_token: t.Optional[str] = self._api_token
+        if not api_token or (
+            self._api_token_exp and self._api_token_exp < datetime.now()
+        ):
+            api_token = self.generate_token()
 
-        return {"Authorization": f"Bearer {token}"}
+        return {"Authorization": f"Bearer {api_token}"}
 
     def _request(
         self,

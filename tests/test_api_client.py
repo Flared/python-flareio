@@ -46,8 +46,8 @@ def test_create_client_empty_api_key() -> None:
 
 def test_generate_token() -> None:
     client = _get_test_client(authenticated=False)
-    assert client.token is None
-    assert client.token_exp is None
+    assert client._api_token is None
+    assert client._api_token_exp is None
     with requests_mock.Mocker() as mocker:
         mocker.register_uri(
             "POST",
@@ -61,9 +61,9 @@ def test_generate_token() -> None:
         token = client.generate_token()
         assert token == "test-token-hello"
 
-        assert client.token == "test-token-hello"
-        assert client.token_exp
-        assert client.token_exp >= datetime.now()
+        assert client._api_token == "test-token-hello"
+        assert client._api_token_exp
+        assert client._api_token_exp >= datetime.now()
 
         assert mocker.last_request.url == "https://api.flare.io/tokens/generate"
         assert mocker.last_request.text is None
@@ -72,8 +72,8 @@ def test_generate_token() -> None:
 
 def test_generate_token_error() -> None:
     client = _get_test_client(authenticated=False)
-    assert client.token is None
-    assert client.token_exp is None
+    assert client._api_token is None
+    assert client._api_token_exp is None
 
     with requests_mock.Mocker() as mocker:
         mocker.register_uri(
@@ -101,8 +101,8 @@ def test_bad_domain() -> None:
 
 def test_wrapped_methods() -> None:
     client = _get_test_client(authenticated=False)
-    assert client.token is None
-    assert client.token_exp is None
+    assert client._api_token is None
+    assert client._api_token_exp is None
 
     # POST: This one will generate since its the first one.
     with requests_mock.Mocker() as mocker:
