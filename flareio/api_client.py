@@ -3,6 +3,7 @@ import requests
 from datetime import datetime
 from datetime import timedelta
 from flareio.exceptions import TokenError
+from urllib.parse import urlparse
 
 import typing as t
 
@@ -66,7 +67,7 @@ class FlareApiClient:
         json: t.Optional[t.Dict[str, t.Any]] = None,
         headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        if not url.startswith("https://api.flare.io"):
+        if not urlparse(url).netloc == "api.flare.io":
             raise Exception(
                 "Please only use the client to access the api.flare.io domain."
             )
