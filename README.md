@@ -2,7 +2,7 @@
 
 `flareio` is a light [Flare API](https://api.docs.flare.io/) SDK that wraps requests and automatically manages authentication.
 
-Usage examples and use cases are documented on the [Flare API documentation](https://api.docs.flare.io/concepts/sdk).
+Usage examples and use cases are documented in the [Flare API documentation](https://api.docs.flare.io/concepts/sdk).
 
 ## Installing
 
