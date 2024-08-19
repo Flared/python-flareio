@@ -166,6 +166,17 @@ def test_wrapped_methods() -> None:
         assert mocker.last_request.headers["Authorization"] == "Bearer test-token-hello"
 
 
+def test_get_path_only() -> None:
+    client = _get_test_client(authenticated=True)
+    with requests_mock.Mocker() as mocker:
+        mocker.register_uri(
+            "GET",
+            "https://api.flare.io/hello/test",
+            status_code=200,
+        )
+        client.get("/hello/test")
+        assert mocker.last_request.url == "https://api.flare.io/hello/test"
+
 def test_scroll() -> None:
     api_client = _get_test_client()
 
