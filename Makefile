@@ -31,6 +31,7 @@ format: venv-tools
 .PHONY: format-check
 format-check: venv-tools
 	venv-tools/bin/ruff check
+	venv-tools/bin/ruff format --check
 
 .PHONY: lint
 lint: mypy format-check

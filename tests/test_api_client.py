@@ -177,6 +177,7 @@ def test_get_path_only() -> None:
         client.get("/hello/test")
         assert mocker.last_request.url == "https://api.flare.io/hello/test"
 
+
 def test_scroll() -> None:
     api_client = _get_test_client()
 
