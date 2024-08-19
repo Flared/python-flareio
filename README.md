@@ -19,7 +19,7 @@ client = FlareApiClient(
 )
 
 sources = client.get(
-    "https://api.flare.io/leaksdb/v2/sources",
+    "/leaksdb/v2/sources",
 ).json()
 ```
 
