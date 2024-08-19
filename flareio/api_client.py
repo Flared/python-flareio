@@ -146,3 +146,54 @@ class FlareApiClient:
             json=json,
             headers=headers,
         )
+
+    def scroll(
+        self,
+        *,
+        method: t.Literal[
+            "GET",
+            "POST",
+        ],
+        url: str,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        headers: t.Optional[t.Dict[str, t.Any]] = None,
+    ) -> t.Iterator[requests.Response]:
+        if method not in {"GET", "POST"}:
+            raise Exception("Scrolling is only supported for GET or POST")
+
+        from_in_params: bool = "from" in (params or {})
+        from_in_json: bool = "from" in (json or {})
+
+        if not (from_in_params or from_in_json):
+            raise Exception("You must specify from either in params or in json")
+        if from_in_params and from_in_json:
+            raise Exception("You can't specify from both in params and in json")
+
+        while True:
+            resp = self._request(
+                method=method,
+                url=url,
+                params=params,
+                json=json,
+                headers=headers,
+            )
+            resp.raise_for_status()
+
+            yield resp
+
+            resp_body = resp.json()
+
+            if "next" not in resp_body:
+                raise Exception(
+                    "'next' was not found in the response body. Are you sure it supports scrolling?"
+                )
+
+            next_page: t.Optional[str] = resp_body["next"]
+            if not next_page:
+                break
+
+            if params and from_in_params:
+                params["from"] = next_page
+            if json and from_in_json:
+                json["from"] = next_page
