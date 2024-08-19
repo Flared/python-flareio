@@ -3,8 +3,10 @@ import requests
 from datetime import datetime
 from datetime import timedelta
 from flareio.exceptions import TokenError
+from requests.adapters import HTTPAdapter
 from urllib.parse import urljoin
 from urllib.parse import urlparse
+from urllib3.util import Retry
 
 import typing as t
 
@@ -24,7 +26,25 @@ class FlareApiClient:
 
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
-        self._session = session or requests.Session()
+        self._session = session or self._create_session()
+
+    @staticmethod
+    def _create_session() -> requests.Session:
+        session = requests.Session()
+        retries = Retry(
+            total=5,
+            backoff_factor=2,
+            status_forcelist=[429, 502, 503, 504],
+            allowed_methods={"GET", "POST"},
+            backoff_max=15,
+        )
+        session.mount(
+            "https://",
+            HTTPAdapter(
+                max_retries=retries,
+            ),
+        )
+        return session
 
     def generate_token(self) -> str:
         payload: t.Optional[dict] = None
