@@ -3,6 +3,7 @@ import requests_mock
 
 from .utils import get_test_client
 from datetime import datetime
+
 from flareio import FlareApiClient
 from flareio.exceptions import TokenError
 

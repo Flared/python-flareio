@@ -1,8 +1,8 @@
 import requests_mock
 
-from flareio import FlareApiClient
-
 import typing as t
+
+from flareio import FlareApiClient
 
 
 def get_test_client(

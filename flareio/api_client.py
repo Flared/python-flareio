@@ -2,13 +2,14 @@ import requests
 
 from datetime import datetime
 from datetime import timedelta
-from flareio.exceptions import TokenError
 from requests.adapters import HTTPAdapter
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 from urllib3.util import Retry
 
 import typing as t
+
+from flareio.exceptions import TokenError
 
 
 class FlareApiClient:
