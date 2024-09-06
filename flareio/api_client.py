@@ -106,7 +106,7 @@ class FlareApiClient:
         netloc: str = urlparse(url).netloc
         if not netloc == "api.flare.io":
             raise Exception(
-                f"Client was used to access the {netloc} domain. Only api.flare.io is supported."
+                f"Client was used to access {netloc=} at {url=}. Only the domain api.flare.io is supported."
             )
 
         headers = {

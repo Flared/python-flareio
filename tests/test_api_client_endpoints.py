@@ -87,6 +87,6 @@ def test_bad_domain() -> None:
 
     with pytest.raises(
         Exception,
-        match="Client was used to access the bad.com domain. Only api.flare.io is supported.",
+        match="Client was used to access netloc='bad.com' at url='https://bad.com/hello-post'. Only the domain api.flare.io is supported.",
     ):
         client.post("https://bad.com/hello-post")
