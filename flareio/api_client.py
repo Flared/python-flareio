@@ -103,14 +103,17 @@ class FlareApiClient:
     ) -> requests.Response:
         url = urljoin("https://api.flare.io", url)
 
-        if not urlparse(url).netloc == "api.flare.io":
+        netloc: str = urlparse(url).netloc
+        if not netloc == "api.flare.io":
             raise Exception(
-                "Please only use the client to access the api.flare.io domain."
+                f"You tried to use the client to access the {netloc} domain. Only api.flare.io is supported."
             )
+
         headers = {
             **(headers or {}),
             **self._auth_headers(),
         }
+
         return self._session.request(
             method=method,
             url=url,

@@ -87,6 +87,6 @@ def test_bad_domain() -> None:
 
     with pytest.raises(
         Exception,
-        match="Please only use the client to access the api.flare.io domain.",
+        match="You tried to use the client to access the bad.com domain. Only api.flare.io is supported.",
     ):
         client.post("https://bad.com/hello-post")
