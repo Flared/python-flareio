@@ -1,6 +1,6 @@
 # python-flareio
 
-`flareio` is a light [Flare API](https://api.docs.flare.io/) SDK that wraps requests and automatically manages authentication.
+`flareio` is a light [Flare API](https://api.docs.flare.io/) SDK that wraps [requests](https://requests.readthedocs.io/) and automatically manages authentication.
 
 Usage examples and use cases are documented in the [Flare API documentation](https://api.docs.flare.io/sdk/python).
 
