@@ -6,8 +6,9 @@ Usage examples and use cases are documented in the [Flare API documentation](htt
 
 ## Installing
 
-The library can be installed via `pip install flareio`.
+`flareio` is [available on PyPI](https://pypi.org/project/flareio/).
 
+The library can be installed via `pip install flareio`.
 
 ## Basic Usage
 
