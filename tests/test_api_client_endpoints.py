@@ -71,7 +71,7 @@ def test_wrapped_methods() -> None:
 
 
 def test_get_path_only() -> None:
-    client = get_test_client(authenticated=True)
+    client = get_test_client()
     with requests_mock.Mocker() as mocker:
         mocker.register_uri(
             "GET",
