@@ -13,15 +13,20 @@ The library can be installed via `pip install flareio`.
 ## Basic Usage
 
 ```python
+import os
+
 from flareio import FlareApiClient
 
+
 client = FlareApiClient(
-    api_key="fw-...",
+    api_key=os.environ.get("FLARE_API_KEY"),
 )
 
-sources = client.get(
-    "/leaksdb/v2/sources",
+result = client.get(
+    "/tokens/test",
 ).json()
+
+print(result)
 ```
 
 ## Contributing
