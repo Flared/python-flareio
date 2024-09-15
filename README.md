@@ -20,13 +20,12 @@ from flareio import FlareApiClient
 
 client = FlareApiClient(
     api_key=os.environ.get("FLARE_API_KEY"),
+    tenant_id=None,  # Use my default tenant.
 )
 
-result = client.get(
-    "/tokens/test",
-).json()
+resp = client.get("/tokens/test")
 
-print(result)
+print(resp.json())
 ```
 
 ## Contributing
