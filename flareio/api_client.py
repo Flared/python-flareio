@@ -11,6 +11,7 @@ from urllib3.util import Retry
 import typing as t
 
 from flareio.exceptions import TokenError
+from flareio.version import __version__ as _flareio_version
 
 
 class FlareApiClient:
@@ -33,6 +34,11 @@ class FlareApiClient:
     @staticmethod
     def _create_session() -> requests.Session:
         session = requests.Session()
+
+        # Set User-Agent
+        session.headers["User-Agent"] = (
+            f"python-flareio/{_flareio_version} requests/{requests.__version__}"
+        )
 
         # Don't accept cookies.
         session.cookies.set_policy(
