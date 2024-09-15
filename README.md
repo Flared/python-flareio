@@ -19,7 +19,7 @@ from flareio import FlareApiClient
 
 
 client = FlareApiClient(
-    api_key=os.environ.get("FLARE_API_KEY"),
+    api_key=os.environ["FLARE_API_KEY"],
     tenant_id=None,  # Use my default tenant.
 )
 
