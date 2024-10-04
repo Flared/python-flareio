@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "flareio"
 version = "0.1.22"
-description = ""
+description = "Python SDK for the flare.io API."
 authors = ["Alexandre Viau <alexandre.viau@flare.io>"]
 readme = "README.md"
 repository = "https://github.com/Flared/python-flareio"
