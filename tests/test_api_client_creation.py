@@ -3,6 +3,8 @@ import requests_mock
 
 from .utils import get_test_client
 from datetime import datetime
+from packaging.version import Version
+from urllib3 import __version__ as urllib_version
 
 from flareio import FlareApiClient
 from flareio.exceptions import TokenError
@@ -62,3 +64,10 @@ def test_generate_token_error() -> None:
 
     with pytest.raises(TokenError):
         client.generate_token()
+
+
+def test_backoff_max() -> None:
+    if Version(urllib_version) >= Version("2.0.0"):
+        retry = FlareApiClient._create_retry()
+        assert hasattr(retry, "backoff_max")
+        assert retry.backoff_max == 15
