@@ -12,12 +12,18 @@ jobs:
           '3.11',
           '3.12',
         ]
-    name: Python ${{ matrix.python-version }}
+        include:
+          - python-version: '3.9'
+            post-venv: 'venv/bin/pip install "urllib3<2" "requests<=2.30" "types-requests<=2.30"'
+    name: Python ${{ matrix.python-version }} ${{ matrix.post-venv }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
+    - run: make venv
+    - if: ${{ matrix.post-venv }}
+      run: ${{ matrix.post-venv }}
     - run: make test
     - run: make lint

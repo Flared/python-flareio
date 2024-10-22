@@ -50,18 +50,25 @@ class FlareApiClient:
         # Enable retries
         session.mount(
             "https://",
-            HTTPAdapter(
-                max_retries=Retry(
-                    total=5,
-                    backoff_factor=2,
-                    status_forcelist=[429, 502, 503, 504],
-                    allowed_methods={"GET", "POST"},
-                    backoff_max=15,
-                )
-            ),
+            HTTPAdapter(max_retries=FlareApiClient._create_retry()),
         )
 
         return session
+
+    @staticmethod
+    def _create_retry() -> Retry:
+        retry = Retry(
+            total=5,
+            backoff_factor=2,
+            status_forcelist=[429, 502, 503, 504],
+            allowed_methods={"GET", "POST"},
+        )
+
+        # Support for urllib3 < 2.X
+        if hasattr(retry, "backoff_max"):
+            retry.backoff_max = 15
+
+        return retry
 
     def generate_token(self) -> str:
         payload: t.Optional[dict] = None
