@@ -27,10 +27,6 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.8"
 requests = ">=2"
-mypy = {version = "^1.11.1", extras = ["dev"]}
-requests-mock = {version = "^1.12.1", extras = ["dev"]}
-types-requests = {version = "^2.32.0.20240712", extras = ["dev"]}
-
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,6 +34,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "8.3.2"
+mypy = "^1.11.1"
+requests-mock = "^1.12.1"
+types-requests = "^2.32.0.20240712"
 
 [tool.ruff.lint]
 extend-select = [
