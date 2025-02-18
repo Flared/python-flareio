@@ -40,7 +40,7 @@ class FlareApiClient:
         tenant_id: t.Optional[str] = os.environ.get("FLARE_TENANT_ID")
         return cls(
             api_key=api_key,
-            tenant_id=int(tenant_id) if tenant_id is not None else None,
+            tenant_id=int(tenant_id) if tenant_id else None,
         )
 
     @staticmethod
