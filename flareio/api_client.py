@@ -1,3 +1,4 @@
+import os
 import requests
 
 from datetime import datetime
@@ -30,6 +31,17 @@ class FlareApiClient:
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
         self._session = session or self._create_session()
+
+    @classmethod
+    def from_env(cls) -> "FlareApiClient":
+        api_key: t.Optional[str] = os.environ.get("FLARE_API_KEY")
+        if not api_key:
+            raise Exception("Please set the FLARE_API_KEY environment variable")
+        tenant_id: t.Optional[str] = os.environ.get("FLARE_TENANT_ID")
+        return cls(
+            api_key=api_key,
+            tenant_id=int(tenant_id) if tenant_id is not None else None,
+        )
 
     @staticmethod
     def _create_session() -> requests.Session:
