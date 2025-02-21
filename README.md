@@ -18,10 +18,7 @@ import os
 from flareio import FlareApiClient
 
 
-client = FlareApiClient(
-    api_key=os.environ["FLARE_API_KEY"],
-    tenant_id=None,  # Use my default tenant.
-)
+client = FlareApiClient.from_env()
 
 resp = client.get("/tokens/test")
 
