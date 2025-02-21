@@ -36,7 +36,9 @@ class FlareApiClient:
     def from_env(cls) -> "FlareApiClient":
         api_key: t.Optional[str] = os.environ.get("FLARE_API_KEY")
         if not api_key:
-            raise Exception("Please set the FLARE_API_KEY environment variable")
+            raise Exception(
+                "Please set the FLARE_API_KEY environment variable. Otherwise, initiate the client using FlareApiClient(api_key=...)."
+            )
         tenant_id: t.Optional[str] = os.environ.get("FLARE_TENANT_ID")
         return cls(
             api_key=api_key,
