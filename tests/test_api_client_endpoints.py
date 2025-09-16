@@ -82,6 +82,21 @@ def test_get_path_only() -> None:
         assert mocker.last_request.url == "https://api.flare.io/hello/test"
 
 
+def test_get_eu_domain() -> None:
+    client = get_test_client(
+        api_domain="api.eu.flare.io",
+        _enable_beta_features=True,
+    )
+    with requests_mock.Mocker() as mocker:
+        mocker.register_uri(
+            "GET",
+            "https://api.eu.flare.io/hello/test",
+            status_code=200,
+        )
+        client.get("/hello/test")
+        assert mocker.last_request.url == "https://api.eu.flare.io/hello/test"
+
+
 def test_get_user_agent() -> None:
     client = get_test_client()
     with requests_mock.Mocker() as mocker:

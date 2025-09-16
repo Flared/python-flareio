@@ -15,6 +15,13 @@ from flareio.exceptions import TokenError
 from flareio.version import __version__ as _flareio_version
 
 
+_API_DOMAIN_DEFAULT: str = "api.flare.io"
+_ALLOWED_API_DOMAINS: t.Tuple[str, ...] = (
+    _API_DOMAIN_DEFAULT,
+    "api.eu.flare.io",
+)
+
+
 class FlareApiClient:
     def __init__(
         self,
@@ -22,9 +29,21 @@ class FlareApiClient:
         api_key: str,
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
+        api_domain: t.Optional[str] = None,
+        _enable_beta_features: bool = False,
     ) -> None:
         if not api_key:
             raise Exception("API Key cannot be empty.")
+
+        api_domain = api_domain or _API_DOMAIN_DEFAULT
+        if api_domain not in _ALLOWED_API_DOMAINS:
+            raise Exception(
+                f"Invalid API domain: {api_domain}. Only {_ALLOWED_API_DOMAINS} are supported."
+            )
+        if api_domain != _API_DOMAIN_DEFAULT and not _enable_beta_features:
+            raise Exception("Custom API domains considered a beta feature.")
+        self._api_domain: str = api_domain
+
         self._api_key: str = api_key
         self._tenant_id: t.Optional[int] = tenant_id
 
@@ -93,7 +112,7 @@ class FlareApiClient:
             }
 
         resp = self._session.post(
-            "https://api.flare.io/tokens/generate",
+            f"https://{self._api_domain}/tokens/generate",
             json=payload,
             headers={
                 "Authorization": self._api_key,
@@ -128,12 +147,12 @@ class FlareApiClient:
         json: t.Optional[t.Dict[str, t.Any]] = None,
         headers: t.Optional[t.Dict[str, t.Any]] = None,
     ) -> requests.Response:
-        url = urljoin("https://api.flare.io", url)
+        url = urljoin(f"https://{self._api_domain}", url)
 
         netloc: str = urlparse(url).netloc
-        if not netloc == "api.flare.io":
+        if not netloc == self._api_domain:
             raise Exception(
-                f"Client was used to access {netloc=} at {url=}. Only the domain api.flare.io is supported."
+                f"Client was used to access {netloc=} at {url=}. Only the domain {self._api_domain} is supported."
             )
 
         headers = {
