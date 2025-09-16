@@ -14,6 +14,19 @@ def test_create_client() -> None:
     FlareApiClient(api_key="test")
 
 
+def test_create_client_eu() -> None:
+    FlareApiClient(
+        api_key="test",
+        api_domain="api.eu.flare.io",
+        _enable_beta_features=True,
+    )
+
+
+def test_create_client_bad_api_domain() -> None:
+    with pytest.raises(Exception, match="Invalid API domain"):
+        FlareApiClient(api_key="test", api_domain="bad.com")
+
+
 def test_create_client_empty_api_key() -> None:
     with pytest.raises(Exception, match="API Key cannot be empty."):
         FlareApiClient(
