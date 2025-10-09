@@ -11,6 +11,7 @@ from urllib3.util import Retry
 
 import typing as t
 
+from flareio._ratelimit import _Limiter
 from flareio.exceptions import TokenError
 from flareio.version import __version__ as _flareio_version
 
@@ -282,3 +283,57 @@ class FlareApiClient:
                 params["from"] = next_page
             if json and from_in_json:
                 json["from"] = next_page
+
+    def scroll_events(
+        self,
+        *,
+        method: t.Literal[
+            "GET",
+            "POST",
+        ],
+        pages_url: str,
+        events_url: str,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        _pages_limiter: t.Optional[_Limiter] = None,
+        _events_limiter: t.Optional[_Limiter] = None,
+    ) -> t.Iterator[
+        t.Tuple[
+            dict,
+            t.Optional[str],
+        ],
+    ]:
+        pages_limiter: _Limiter = _pages_limiter or _Limiter(
+            tick_interval=timedelta(seconds=1),
+        )
+        events_limiter: _Limiter = _events_limiter or _Limiter(
+            tick_interval=timedelta(seconds=0.25),
+        )
+
+        pages_limiter.tick()
+        for page_resp in self.scroll(
+            method=method,
+            url=pages_url,
+            params=params,
+            json=json,
+        ):
+            page_resp.raise_for_status()
+            page_items: t.List[dict] = page_resp.json()["items"]
+            page_next: t.Optional[str] = page_resp.json()["next"]
+
+            for page_item in page_items:
+                event_uid: str = page_item["metadata"]["uid"]
+
+                events_limiter.tick()
+                event_resp: requests.Response = self.get(
+                    url=events_url,
+                    params={
+                        "uid": event_uid,
+                    },
+                )
+                event_resp.raise_for_status()
+                event: dict = event_resp.json()
+
+                yield event, page_next
+
+            pages_limiter.tick()
