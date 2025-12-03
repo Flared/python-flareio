@@ -266,9 +266,9 @@ class FlareApiClient:
             )
             resp.raise_for_status()
 
-            yield resp
-
             resp_body = resp.json()
+
+            yield resp
 
             if "next" not in resp_body:
                 raise Exception(
