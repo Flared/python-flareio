@@ -28,7 +28,7 @@ print(resp.json())
 ## Contributing
 
 - `make test` will run tests
-- `make format` format will format the code
 - `make check` will run typechecking
+- `make format` format will format the code
 - `make format-check` will run linting
 - `make ci` will run CI equivalent
