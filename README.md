@@ -27,6 +27,12 @@ print(resp.json())
 
 ## Contributing
 
+We recommend the following dependencies:
+- `make`
+- `uv`
+- `direnv`
+
+The `Makefile` contains the following targets:
 - `make test` will run tests
 - `make check` will run typechecking
 - `make format` format will format the code
