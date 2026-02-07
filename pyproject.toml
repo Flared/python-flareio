@@ -23,9 +23,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Topic :: Software Development :: Libraries :: Application Frameworks",
 ]
-packages = [
-    { include = "flareio" },
-]
 dependencies = [
 	"requests>=2",
 ]
