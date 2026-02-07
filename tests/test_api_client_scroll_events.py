@@ -45,9 +45,9 @@ def test_scroll_events() -> None:
             status_code=200,
         )
 
-        item, cursor = next(events_iterator)
+        event, cursor = next(events_iterator)
         assert len(mocker.request_history) == 2
-        assert item == {"event": "hello"}
+        assert event == {"event": "hello"}
         assert cursor == "second_page"
 
     # Last page
@@ -63,3 +63,48 @@ def test_scroll_events() -> None:
         with pytest.raises(StopIteration):
             next(events_iterator)
         assert len(mocker.request_history) == 1
+
+
+def test_scroll_events_metadata() -> None:
+    """
+    scroll_events_metadata is used by the flareio-cli
+    """
+    api_client = get_test_client()
+    no_limit: _Limiter = _Limiter._unlimited()
+
+    events_iterator = api_client._scroll_events_metadata(
+        method="GET",
+        pages_url="https://api.flare.io/pages",
+        events_url="https://api.flare.io/events",
+        params={
+            "from": None,
+        },
+        _pages_limiter=no_limit,
+        _events_limiter=no_limit,
+    )
+
+    # First page
+    with requests_mock.Mocker() as mocker:
+        mocker.register_uri(
+            "GET",
+            "https://api.flare.io/pages",
+            json={
+                "items": [
+                    {"metadata": {"uid": "first_event_uid"}},
+                ],
+                "next": "second_page",
+            },
+            status_code=200,
+        )
+        mocker.register_uri(
+            "GET",
+            "https://api.flare.io/events",
+            json={"event": "hello"},
+            status_code=200,
+        )
+
+        event_metadata, event, cursor = next(events_iterator)
+        assert len(mocker.request_history) == 2
+        assert event_metadata == {"metadata": {"uid": "first_event_uid"}}
+        assert event == {"event": "hello"}
+        assert cursor == "second_page"

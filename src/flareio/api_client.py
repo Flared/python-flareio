@@ -284,7 +284,7 @@ class FlareApiClient:
             if json and from_in_json:
                 json["from"] = next_page
 
-    def scroll_events(
+    def _scroll_events_metadata(
         self,
         *,
         method: t.Literal[
@@ -299,6 +299,7 @@ class FlareApiClient:
         _events_limiter: t.Optional[_Limiter] = None,
     ) -> t.Iterator[
         t.Tuple[
+            dict,
             dict,
             t.Optional[str],
         ],
@@ -321,8 +322,8 @@ class FlareApiClient:
             page_items: t.List[dict] = page_resp.json()["items"]
             page_next: t.Optional[str] = page_resp.json()["next"]
 
-            for page_item in page_items:
-                event_uid: str = page_item["metadata"]["uid"]
+            for event_metadata in page_items:
+                event_uid: str = event_metadata["metadata"]["uid"]
 
                 events_limiter.tick()
                 event_resp: requests.Response = self.get(
@@ -334,6 +335,36 @@ class FlareApiClient:
                 event_resp.raise_for_status()
                 event: dict = event_resp.json()
 
-                yield event, page_next
+                yield event_metadata, event, page_next
 
             pages_limiter.tick()
+
+    def scroll_events(
+        self,
+        *,
+        method: t.Literal[
+            "GET",
+            "POST",
+        ],
+        pages_url: str,
+        events_url: str,
+        params: t.Optional[t.Dict[str, t.Any]] = None,
+        json: t.Optional[t.Dict[str, t.Any]] = None,
+        _pages_limiter: t.Optional[_Limiter] = None,
+        _events_limiter: t.Optional[_Limiter] = None,
+    ) -> t.Iterator[
+        t.Tuple[
+            dict,
+            t.Optional[str],
+        ],
+    ]:
+        for _, event, page_next in self._scroll_events_metadata(
+            method=method,
+            pages_url=pages_url,
+            events_url=events_url,
+            params=params,
+            json=json,
+            _pages_limiter=_pages_limiter,
+            _events_limiter=_events_limiter,
+        ):
+            yield event, page_next
