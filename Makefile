@@ -1,41 +1,31 @@
-venv: pyproject.toml poetry.lock venv-tools
-	rm -rf venv
-	python3 -m venv venv
-	VIRTUAL_ENV=venv venv-tools/bin/poetry install
+DEFAULT_GOAL := ci
 
-venv-tools: requirements.tools.txt
-	rm -rf venv-tools
-	python3 -m venv venv-tools
-	venv-tools/bin/pip install -r requirements.tools.txt
+.PHONY: ci
+ci: check format-check test
+
+.PHONY: venv
+venv:
+	uv sync
 
 .PHONY: clean
 clean:
-	rm -rf venv
-	rm -rf venv-tools
+	rm -rf .venv
 	rm -rf dist
 
 .PHONY: test
 test: venv
-	venv/bin/pytest -vv
-
-.PHONY: build
-build: venv-tools
-	rm -rf dist
-	venv-tools/bin/poetry build
+	uv run pytest
 
 .PHONY: format
 format: venv-tools
-	venv-tools/bin/ruff check --fix --unsafe-fixes
-	venv-tools/bin/ruff format
+	uv run ruff check --fix --unsafe-fixes
+	uv run ruff format
 
 .PHONY: format-check
-format-check: venv-tools
-	venv-tools/bin/ruff check
-	venv-tools/bin/ruff format --check
+format-check:
+	uv run ruff check
+	uv run ruff format --check
 
-.PHONY: lint
-lint: mypy format-check
-
-.PHONY: mypy
-mypy: venv
-	venv/bin/mypy flareio tests
+.PHONY: check
+check: venv
+	uv run mypy src/flareio tests

@@ -1,11 +1,14 @@
-[tool.poetry]
+[project]
 name = "flareio"
 version = "1.2.0"
 description = "Python SDK for the flare.io API."
-authors = ["Alexandre Viau <alexandre.viau@flare.io>"]
+authors = [
+	{ name = "Alexandre Viau", email="alexandre.viau@flare.io>" }
+]
 readme = "README.md"
 repository = "https://github.com/Flared/python-flareio"
 license = "MIT"
+requires-python = ">=3.9"
 keywords = [
     "flare",
     "sdk",
@@ -24,19 +27,23 @@ packages = [
     { include = "flareio" },
 ]
 
-[tool.poetry.dependencies]
+[dependencies]
 python = ">=3.8"
 requests = ">=2"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.9.28,<0.10.0"]
+build-backend = "uv_build"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "8.3.2"
-mypy = "^1.11.1"
-requests-mock = "^1.12.1"
-types-requests = "^2.32.0.20240712"
+[dependency-groups]
+dev = [
+	"pytest>=8.3.2",
+	"mypy>=1.11.1",
+	"ruff>=0.15.0",
+	"requests-mock>=1.12.1",
+	"types-requests>=2.32.0.20240712",
+	"pip>=26",
+]
 
 [tool.ruff.lint]
 extend-select = [

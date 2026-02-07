@@ -2,45 +2,47 @@
 
 set -eo pipefail
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ROOT_DIR="$( cd ${DIR}/.. && pwd )"
+
 fail() {
   echo "$@" 1>&2;
   exit 1
 }
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-ROOT_DIR="$( cd ${DIR}/.. && pwd )"
 
-current_version=$(poetry version -s)
-echo "Current version: ${current_version}"
+main() {
+    local current_branch=
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ ${current_branch} != "main" ]]; then
+        fail "error: Must be on main to release; git checkout main"
+    fi
 
-# Must run on main.
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-if [[ ${current_branch} != "main" ]]
-then
-  fail "error: Must be on main to release; git checkout main"
-fi
+    local current_version=
+    current_version=$(uv version --short)
+    echo "Current version is ${current_version}"
 
-# Must provide version.
-version=${1}
-if [[ -z "${version}" ]]
-then
-  fail "error: expected 1 argument 'version'"
-fi
+    local new_version="${1}"
+    if [[ -z "${new_version}" ]]; then
+        fail "Please specify the new version!"
+    fi
 
-if ! (python -c "from packaging import version; assert version.parse('${version}') > version.parse('${current_version}')" 2> /dev/null)
-then
-  fail "error: version must be greater than ${current_version}"
-fi
+    if ! (python -c "from packaging import version; assert version.parse('${new_version}') > version.parse('${current_version}')" 2> /dev/null); then
+        fail "error: version must be greater than ${current_version}"
+    fi
 
-read -p "Release ${version}? [y/n]" -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-  poetry version "${version}"
+    read -p "Release ${version}? [y/n]" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        uv version ${new_version}
 
-  git reset -- ${ROOT_DIR}
-  git add "${ROOT_DIR}/pyproject.toml"
-  git commit -m "version: release ${version}"
-  git push
+        git reset -- ${ROOT_DIR}
+        git add "${ROOT_DIR}/pyproject.toml"
+        git add "${ROOT_DIR}/uv.lock"
+        git commit -m "version: release ${new_version}"
+        git push
 
-  echo "Release at https://github.com/Flared/python-flareio/releases/new?tag=v${version}&target=main&title=v${version}"
-fi
+        echo "Release at https://github.com/Flared/python-flareio/releases/new?tag=v${new_version}&target=main&title=v${new_version}"
+    fi
+}
+
+main $@
