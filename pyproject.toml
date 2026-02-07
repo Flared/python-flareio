@@ -8,7 +8,7 @@ authors = [
 readme = "README.md"
 repository = "https://github.com/Flared/python-flareio"
 license = "MIT"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 keywords = [
     "flare",
     "sdk",
@@ -40,7 +40,7 @@ dev = [
 	"ruff>=0.15.0",
 	"requests-mock>=1.12.1",
 	"types-requests>=2.32.0.20240712",
-	"pip>=26",
+	"pip>=25",
 	"ty>=0.0.15",
 ]
 
