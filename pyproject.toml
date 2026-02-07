@@ -26,10 +26,9 @@ classifiers = [
 packages = [
     { include = "flareio" },
 ]
-
-[dependencies]
-python = ">=3.8"
-requests = ">=2"
+dependencies = [
+	"requests>=2",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.28,<0.10.0"]
