@@ -143,8 +143,11 @@ wheels = [
 
 [[package]]
 name = "flareio"
-version = "1.2.1"
+version = "1.2.2"
 source = { editable = "." }
+dependencies = [
+    { name = "requests" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -158,6 +161,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "requests", specifier = ">=2" }]
 
 [package.metadata.requires-dev]
 dev = [
