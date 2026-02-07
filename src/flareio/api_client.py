@@ -100,7 +100,7 @@ class FlareApiClient:
 
         # Support for urllib3 < 2.X
         if hasattr(retry, "backoff_max"):
-            retry.backoff_max = 15
+            setattr(retry, "backoff_max", 15)
 
         return retry
 

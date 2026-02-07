@@ -3,9 +3,12 @@ DEFAULT_GOAL := ci
 .PHONY: ci
 ci: check format-check test
 
-.PHONY: venv
-venv:
+.venv: uv.lock pyproject.toml
+	rm -rf .venv
 	uv sync
+
+.PHONY: venv
+venv: .venv
 
 .PHONY: clean
 clean:
@@ -28,4 +31,4 @@ format-check:
 
 .PHONY: check
 check: venv
-	uv run mypy src/flareio tests
+	uv run ty check
