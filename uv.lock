@@ -160,7 +160,7 @@ wheels = [
 
 [[package]]
 name = "flareio"
-version = "1.2.5"
+version = "1.2.6"
 source = { editable = "." }
 dependencies = [
     { name = "requests", version = "2.32.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
