@@ -284,7 +284,7 @@ class FlareApiClient:
             if json and from_in_json:
                 json["from"] = next_page
 
-    def _scroll_events_metadata(
+    def _scroll_events_items(
         self,
         *,
         method: t.Literal[
@@ -322,8 +322,8 @@ class FlareApiClient:
             page_items: t.List[dict] = page_resp.json()["items"]
             page_next: t.Optional[str] = page_resp.json()["next"]
 
-            for event_metadata in page_items:
-                event_uid: str = event_metadata["metadata"]["uid"]
+            for event_item in page_items:
+                event_uid: str = event_item["metadata"]["uid"]
 
                 events_limiter.tick()
                 event_resp: requests.Response = self.get(
@@ -335,7 +335,7 @@ class FlareApiClient:
                 event_resp.raise_for_status()
                 event: dict = event_resp.json()
 
-                yield event_metadata, event, page_next
+                yield event_item, event, page_next
 
             pages_limiter.tick()
 
@@ -358,7 +358,7 @@ class FlareApiClient:
             t.Optional[str],
         ],
     ]:
-        for _, event, page_next in self._scroll_events_metadata(
+        for _, event, page_next in self._scroll_events_items(
             method=method,
             pages_url=pages_url,
             events_url=events_url,

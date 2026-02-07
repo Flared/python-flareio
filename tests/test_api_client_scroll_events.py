@@ -65,14 +65,14 @@ def test_scroll_events() -> None:
         assert len(mocker.request_history) == 1
 
 
-def test_scroll_events_metadata() -> None:
+def test_scroll_events_items() -> None:
     """
     scroll_events_metadata is used by the flareio-cli
     """
     api_client = get_test_client()
     no_limit: _Limiter = _Limiter._unlimited()
 
-    events_iterator = api_client._scroll_events_metadata(
+    events_iterator = api_client._scroll_events_items(
         method="GET",
         pages_url="https://api.flare.io/pages",
         events_url="https://api.flare.io/events",
