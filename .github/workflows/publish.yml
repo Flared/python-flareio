@@ -1,17 +1,26 @@
-name: Publish
+name: "Publish"
+
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - v*
+
 jobs:
-  publish:
+  run:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+      contents: read
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        architecture: x64
-    - run: make build
-    - run: venv-tools/bin/twine upload dist/*
-      env:
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install Python 3.13
+        run: uv python install 3.13
+      - name: Build
+        run: uv build
+      - name: Publish
+        run: uv publish
