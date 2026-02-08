@@ -249,6 +249,9 @@ class FlareApiClient:
         if method not in {"GET", "POST"}:
             raise Exception("Scrolling is only supported for GET or POST")
 
+        params = dict(params) if params else None
+        json = dict(json) if json else None
+
         from_in_params: bool = "from" in (params or {})
         from_in_json: bool = "from" in (json or {})
 
