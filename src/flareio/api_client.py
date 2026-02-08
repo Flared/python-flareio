@@ -11,6 +11,7 @@ from urllib3.util import Retry
 
 import typing as t
 
+from flareio._models import _ScrollEventsResult
 from flareio._ratelimit import _Limiter
 from flareio.exceptions import TokenError
 from flareio.version import __version__ as _flareio_version
@@ -297,13 +298,7 @@ class FlareApiClient:
         json: t.Optional[t.Dict[str, t.Any]] = None,
         _pages_limiter: t.Optional[_Limiter] = None,
         _events_limiter: t.Optional[_Limiter] = None,
-    ) -> t.Iterator[
-        t.Tuple[
-            dict,
-            dict,
-            t.Optional[str],
-        ],
-    ]:
+    ) -> t.Iterator[_ScrollEventsResult]:
         pages_limiter: _Limiter = _pages_limiter or _Limiter(
             tick_interval=timedelta(seconds=1),
         )
@@ -335,7 +330,11 @@ class FlareApiClient:
                 event_resp.raise_for_status()
                 event: dict = event_resp.json()
 
-                yield event_item, event, page_next
+                yield _ScrollEventsResult(
+                    item=event_item,
+                    data=event,
+                    next=page_next,
+                )
 
             pages_limiter.tick()
 
@@ -358,7 +357,7 @@ class FlareApiClient:
             t.Optional[str],
         ],
     ]:
-        for _, event, page_next in self._scroll_events_items(
+        for result in self._scroll_events_items(
             method=method,
             pages_url=pages_url,
             events_url=events_url,
@@ -367,4 +366,4 @@ class FlareApiClient:
             _pages_limiter=_pages_limiter,
             _events_limiter=_events_limiter,
         ):
-            yield event, page_next
+            yield result.data, result.next

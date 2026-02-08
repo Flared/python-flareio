@@ -103,8 +103,8 @@ def test_scroll_events_items() -> None:
             status_code=200,
         )
 
-        event_metadata, event, cursor = next(events_iterator)
+        result = next(events_iterator)
         assert len(mocker.request_history) == 2
-        assert event_metadata == {"metadata": {"uid": "first_event_uid"}}
-        assert event == {"event": "hello"}
-        assert cursor == "second_page"
+        assert result.item == {"metadata": {"uid": "first_event_uid"}}
+        assert result.data == {"event": "hello"}
+        assert result.next == "second_page"
