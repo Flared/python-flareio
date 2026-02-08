@@ -2,7 +2,7 @@ import dataclasses
 
 
 @dataclasses.dataclass(frozen=True)
-class _ScrollEventsResult:
-    item: dict
-    data: dict
+class ScrollEventsResult:
+    metadata: dict
+    event: dict
     next: str | None

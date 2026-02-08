@@ -11,9 +11,9 @@ from urllib3.util import Retry
 
 import typing as t
 
-from flareio._models import _ScrollEventsResult
 from flareio._ratelimit import _Limiter
 from flareio.exceptions import TokenError
+from flareio.models import ScrollEventsResult
 from flareio.version import __version__ as _flareio_version
 
 
@@ -285,7 +285,7 @@ class FlareApiClient:
             if json and from_in_json:
                 json["from"] = next_page
 
-    def _scroll_events_items(
+    def scroll_events(
         self,
         *,
         method: t.Literal[
@@ -298,7 +298,7 @@ class FlareApiClient:
         json: t.Optional[t.Dict[str, t.Any]] = None,
         _pages_limiter: t.Optional[_Limiter] = None,
         _events_limiter: t.Optional[_Limiter] = None,
-    ) -> t.Iterator[_ScrollEventsResult]:
+    ) -> t.Iterator[ScrollEventsResult]:
         pages_limiter: _Limiter = _pages_limiter or _Limiter(
             tick_interval=timedelta(seconds=1),
         )
@@ -330,40 +330,10 @@ class FlareApiClient:
                 event_resp.raise_for_status()
                 event: dict = event_resp.json()
 
-                yield _ScrollEventsResult(
-                    item=event_item,
-                    data=event,
+                yield ScrollEventsResult(
+                    metadata=event_item,
+                    event=event,
                     next=page_next,
                 )
 
             pages_limiter.tick()
-
-    def scroll_events(
-        self,
-        *,
-        method: t.Literal[
-            "GET",
-            "POST",
-        ],
-        pages_url: str,
-        events_url: str,
-        params: t.Optional[t.Dict[str, t.Any]] = None,
-        json: t.Optional[t.Dict[str, t.Any]] = None,
-        _pages_limiter: t.Optional[_Limiter] = None,
-        _events_limiter: t.Optional[_Limiter] = None,
-    ) -> t.Iterator[
-        t.Tuple[
-            dict,
-            t.Optional[str],
-        ],
-    ]:
-        for result in self._scroll_events_items(
-            method=method,
-            pages_url=pages_url,
-            events_url=events_url,
-            params=params,
-            json=json,
-            _pages_limiter=_pages_limiter,
-            _events_limiter=_events_limiter,
-        ):
-            yield result.data, result.next
