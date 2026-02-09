@@ -1,6 +1,6 @@
 [project]
 name = "flareio"
-version = "2.1.0"
+version = "2.2.0"
 description = "Python SDK for the flare.io API."
 authors = [
 	{ name = "Alexandre Viau", email="alexandre.viau@flare.io>" }
