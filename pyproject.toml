@@ -17,6 +17,8 @@ classifiers = [
   "Intended Audience :: Information Technology",
   "Intended Audience :: Developers",
   "Operating System :: POSIX :: Linux",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -24,7 +26,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
-  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
 	"requests>=2",
