@@ -1,12 +1,12 @@
 from datetime import datetime
 from datetime import timedelta
 
-from flareio._ratelimit import _Limiter
+from flareio.ratelimit import Limiter
 
 
 def test_limiter() -> None:
     # Setup limiter
-    limiter: _Limiter = _Limiter(
+    limiter: Limiter = Limiter(
         tick_interval=timedelta(seconds=35),
         _sleeper=lambda _: None,
     )
@@ -28,17 +28,17 @@ def test_limiter() -> None:
 
 def test_seconds_until() -> None:
     future: datetime = datetime.now() + timedelta(seconds=10)
-    assert _Limiter._seconds_until(future) > 5
+    assert Limiter._seconds_until(future) > 5
 
 
 def test_seconds_until_negative() -> None:
     now: datetime = datetime.now()
     past = now - timedelta(seconds=10)
-    assert _Limiter._seconds_until(past) == 0.0
+    assert Limiter._seconds_until(past) == 0.0
 
 
 def test_limiter_unlimited() -> None:
-    limiter: _Limiter = _Limiter._unlimited()
+    limiter: Limiter = Limiter._unlimited()
     assert limiter._slept_for == 0
     limiter.tick()
     limiter.tick()

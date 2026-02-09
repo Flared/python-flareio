@@ -6,7 +6,7 @@ from datetime import timedelta
 import typing as t
 
 
-class _Limiter:
+class Limiter:
     def __init__(
         self,
         *,
@@ -39,5 +39,5 @@ class _Limiter:
         self._push_next_tick()
 
     @classmethod
-    def _unlimited(cls) -> "_Limiter":
+    def _unlimited(cls) -> "Limiter":
         return cls(tick_interval=timedelta(seconds=0))

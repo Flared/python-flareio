@@ -3,13 +3,13 @@ import requests_mock
 
 from .utils import get_test_client
 
-from flareio._ratelimit import _Limiter
+from flareio.ratelimit import Limiter
 
 
 def test_scroll_events() -> None:
     api_client = get_test_client()
 
-    no_limit: _Limiter = _Limiter._unlimited()
+    no_limit: Limiter = Limiter._unlimited()
 
     # This should make no http call.
     with requests_mock.Mocker() as mocker:

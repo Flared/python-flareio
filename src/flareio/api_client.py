@@ -11,9 +11,9 @@ from urllib3.util import Retry
 
 import typing as t
 
-from flareio._ratelimit import _Limiter
 from flareio.exceptions import TokenError
 from flareio.models import ScrollEventsResult
+from flareio.ratelimit import Limiter
 from flareio.version import __version__ as _flareio_version
 
 
@@ -299,13 +299,13 @@ class FlareApiClient:
         events_url: str,
         params: t.Optional[t.Dict[str, t.Any]] = None,
         json: t.Optional[t.Dict[str, t.Any]] = None,
-        _pages_limiter: t.Optional[_Limiter] = None,
-        _events_limiter: t.Optional[_Limiter] = None,
+        _pages_limiter: t.Optional[Limiter] = None,
+        _events_limiter: t.Optional[Limiter] = None,
     ) -> t.Iterator[ScrollEventsResult]:
-        pages_limiter: _Limiter = _pages_limiter or _Limiter(
+        pages_limiter: Limiter = _pages_limiter or Limiter(
             tick_interval=timedelta(seconds=1),
         )
-        events_limiter: _Limiter = _events_limiter or _Limiter(
+        events_limiter: Limiter = _events_limiter or Limiter(
             tick_interval=timedelta(seconds=0.25),
         )
 
