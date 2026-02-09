@@ -41,3 +41,11 @@ class Limiter:
     @classmethod
     def _unlimited(cls) -> "Limiter":
         return cls(tick_interval=timedelta(seconds=0))
+
+    @classmethod
+    def from_seconds(cls, tick_interval_seconds: int) -> "Limiter":
+        return cls(
+            tick_interval=timedelta(
+                seconds=tick_interval_seconds,
+            )
+        )
