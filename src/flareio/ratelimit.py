@@ -43,7 +43,7 @@ class Limiter:
         return cls(tick_interval=timedelta(seconds=0))
 
     @classmethod
-    def from_seconds(cls, tick_interval_seconds: int) -> "Limiter":
+    def from_seconds(cls, tick_interval_seconds: float) -> "Limiter":
         return cls(
             tick_interval=timedelta(
                 seconds=tick_interval_seconds,
