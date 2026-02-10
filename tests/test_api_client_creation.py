@@ -1,10 +1,12 @@
+from datetime import datetime
+
 import pytest
 import requests_mock
 
-from .utils import get_test_client
-from datetime import datetime
 from packaging.version import Version
 from urllib3 import __version__ as urllib_version
+
+from .utils import get_test_client
 
 from flareio import FlareApiClient
 from flareio.exceptions import TokenError

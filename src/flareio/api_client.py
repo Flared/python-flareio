@@ -1,12 +1,14 @@
 import os
-import requests
 
 from datetime import datetime
 from datetime import timedelta
 from http.cookiejar import DefaultCookiePolicy
-from requests.adapters import HTTPAdapter
 from urllib.parse import urljoin
 from urllib.parse import urlparse
+
+import requests
+
+from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
 import typing as t

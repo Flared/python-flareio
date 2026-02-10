@@ -63,7 +63,6 @@ extend-select = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
-no-sections = true
 lines-after-imports = 2
 lines-between-types = 1
 force-wrap-aliases = true
