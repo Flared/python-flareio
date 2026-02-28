@@ -34,6 +34,7 @@ class FlareApiClient:
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
         api_domain: t.Optional[str] = None,
+        _disable_auth: bool = False,
         _enable_beta_features: bool = False,
     ) -> None:
         if not api_key:
@@ -53,6 +54,7 @@ class FlareApiClient:
 
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
+        self._disable_auth: bool = _disable_auth
         self._session = session or self._create_session()
 
     @classmethod
@@ -134,6 +136,8 @@ class FlareApiClient:
         return token
 
     def _auth_headers(self) -> dict:
+        if self._disable_auth:
+            return dict()
         api_token: t.Optional[str] = self._api_token
         if not api_token or (
             self._api_token_exp and self._api_token_exp < datetime.now()
