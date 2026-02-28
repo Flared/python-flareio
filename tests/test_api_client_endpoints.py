@@ -121,3 +121,22 @@ def test_bad_domain() -> None:
         match="Client was used to access netloc='bad.com' at url='https://bad.com/hello-post'. Only the domain api.flare.io is supported.",
     ):
         client.post("https://bad.com/hello-post")
+
+
+def test_disable_auth_does_not_call_generate() -> None:
+    client = get_test_client(
+        authenticated=False,
+        _disable_auth=True,
+    )
+    with requests_mock.Mocker() as mocker:
+        mocker.register_uri(
+            "POST",
+            "https://api.flare.io/hello-post",
+            status_code=200,
+        )
+        client.post("https://api.flare.io/hello-post", json={"foo": "bar"})
+        assert mocker.last_request.url == "https://api.flare.io/hello-post"
+        assert mocker.last_request.json() == {"foo": "bar"}
+
+        # Authorization header should not be present when auth is disabled
+        assert not mocker.last_request.headers.get("Authorization")
