@@ -1,5 +1,7 @@
 import requests_mock
 
+from requests.auth import AuthBase
+
 import typing as t
 
 from flareio import FlareApiClient
@@ -11,14 +13,14 @@ def get_test_client(
     authenticated: bool = True,
     api_domain: t.Optional[str] = None,
     _enable_beta_features: bool = False,
-    _disable_auth: bool = False,
+    _auth: t.Optional[AuthBase] = None,
 ) -> FlareApiClient:
     client = FlareApiClient(
         api_key="test-api-key",
         tenant_id=tenant_id,
         api_domain=api_domain,
         _enable_beta_features=_enable_beta_features,
-        _disable_auth=_disable_auth,
+        _auth=_auth,
     )
 
     if authenticated:

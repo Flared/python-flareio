@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 import requests
 
 from requests.adapters import HTTPAdapter
+from requests.auth import AuthBase
 from urllib3.util import Retry
 
 import typing as t
@@ -34,7 +35,7 @@ class FlareApiClient:
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
         api_domain: t.Optional[str] = None,
-        _disable_auth: bool = False,
+        _auth: AuthBase | None = None,
         _enable_beta_features: bool = False,
     ) -> None:
         if not api_key:
@@ -52,9 +53,9 @@ class FlareApiClient:
         self._api_key: str = api_key
         self._tenant_id: t.Optional[int] = tenant_id
 
+        self._auth: t.Optional[AuthBase] = _auth
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
-        self._disable_auth: bool = _disable_auth
         self._session = session or self._create_session()
 
     @classmethod
@@ -135,16 +136,24 @@ class FlareApiClient:
 
         return token
 
-    def _auth_headers(self) -> dict:
-        if self._disable_auth:
-            return dict()
+    def _apply_auth(
+        self,
+        *,
+        request: requests.PreparedRequest,
+    ) -> requests.PreparedRequest:
+        if self._auth:
+            self._auth(request)
+            return request
+
         api_token: t.Optional[str] = self._api_token
         if not api_token or (
             self._api_token_exp and self._api_token_exp < datetime.now()
         ):
             api_token = self.generate_token()
 
-        return {"Authorization": f"Bearer {api_token}"}
+        request.headers["Authorization"] = f"Bearer {api_token}"
+
+        return request
 
     def _request(
         self,
@@ -163,18 +172,19 @@ class FlareApiClient:
                 f"Client was used to access {netloc=} at {url=}. Only the domain {self._api_domain} is supported."
             )
 
-        headers = {
-            **(headers or {}),
-            **self._auth_headers(),
-        }
-
-        return self._session.request(
+        request = requests.Request(
             method=method,
             url=url,
             params=params,
             json=json,
             headers=headers,
         )
+
+        prepared = self._session.prepare_request(request)
+        prepared = self._apply_auth(request=prepared)
+        resp = self._session.send(prepared)
+
+        return resp
 
     def post(
         self,
