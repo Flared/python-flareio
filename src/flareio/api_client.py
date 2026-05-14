@@ -37,6 +37,7 @@ class FlareApiClient:
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
         api_domain: t.Optional[str] = None,
+        proxies: t.Optional[t.Dict[str, str]] = None,
         _auth: AuthBase | None = None,
         _enable_beta_features: bool = False,
     ) -> None:
@@ -59,6 +60,8 @@ class FlareApiClient:
         self._api_token: t.Optional[str] = None
         self._api_token_exp: t.Optional[datetime] = None
         self._session = session or self._create_session()
+        if proxies is not None:
+            self._session.proxies.update(proxies)
 
     @classmethod
     def from_env(cls) -> "FlareApiClient":

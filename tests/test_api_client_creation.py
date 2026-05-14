@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import pytest
+import requests
 import requests_mock
 
 from packaging.version import Version
@@ -86,3 +87,31 @@ def test_backoff_max() -> None:
         retry = FlareApiClient._create_retry()
         assert hasattr(retry, "backoff_max")
         assert retry.backoff_max == 15
+
+
+def test_proxies_applied_to_session() -> None:
+    client = FlareApiClient(
+        api_key="test",
+        proxies={"https": "http://proxy.corp.local:8080"},
+    )
+    assert client._session.proxies["https"] == "http://proxy.corp.local:8080"
+
+
+def test_proxies_default_no_proxy() -> None:
+    client = FlareApiClient(api_key="test")
+    assert client._session.proxies == {}
+
+
+def test_proxies_merge_with_user_session() -> None:
+    session = requests.Session()
+    session.proxies["http"] = "http://existing-proxy:3128"
+
+    client = FlareApiClient(
+        api_key="test",
+        session=session,
+        proxies={"https": "http://new-proxy:8080"},
+    )
+
+    assert client._session is session
+    assert client._session.proxies["http"] == "http://existing-proxy:3128"
+    assert client._session.proxies["https"] == "http://new-proxy:8080"
