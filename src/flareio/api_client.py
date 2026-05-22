@@ -21,7 +21,7 @@ from flareio.version import __version__ as _flareio_version
 
 
 _API_DOMAIN_DEFAULT: str = "api.flare.io"
-_ALLOWED_API_DOMAINS: frozenset[str] = frozenset(
+_ALLOWED_API_DOMAINS: t.FrozenSet[str] = frozenset(
     {
         _API_DOMAIN_DEFAULT,
         "api.eu.flare.io",

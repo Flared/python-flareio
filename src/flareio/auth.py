@@ -1,14 +1,16 @@
 from requests import PreparedRequest
 from requests.auth import AuthBase
 
+import typing as t
+
 
 class _StaticHeadersAuth(AuthBase):
     def __init__(
         self,
         *,
-        headers: dict[str, str],
+        headers: t.Dict[str, str],
     ) -> None:
-        self._headers: dict[str, str] = headers
+        self._headers: t.Dict[str, str] = headers
 
     def __call__(
         self,
