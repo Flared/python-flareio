@@ -21,7 +21,7 @@ from flareio.version import __version__ as _flareio_version
 
 
 _API_DOMAIN_DEFAULT: str = "api.flare.io"
-_ALLOWED_API_DOMAINS: frozenset[str] = frozenset(
+_ALLOWED_API_DOMAINS: t.FrozenSet[str] = frozenset(
     {
         _API_DOMAIN_DEFAULT,
         "api.eu.flare.io",
@@ -37,7 +37,7 @@ class FlareApiClient:
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
         api_domain: t.Optional[str] = None,
-        _auth: AuthBase | None = None,
+        _auth: t.Optional[AuthBase] = None,
         _enable_beta_features: bool = False,
     ) -> None:
         if not api_key:
