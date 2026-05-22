@@ -37,7 +37,7 @@ class FlareApiClient:
         tenant_id: t.Optional[int] = None,
         session: t.Optional[requests.Session] = None,
         api_domain: t.Optional[str] = None,
-        _auth: AuthBase | None = None,
+        _auth: t.Optional[AuthBase] = None,
         _enable_beta_features: bool = False,
     ) -> None:
         if not api_key:
